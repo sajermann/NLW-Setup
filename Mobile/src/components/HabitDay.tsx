@@ -1,4 +1,9 @@
-import { View, TouchableOpacity, Dimensions } from "react-native";
+import {
+  View,
+  TouchableOpacity,
+  Dimensions,
+  TouchableOpacityProps,
+} from "react-native";
 import { Feather } from "@expo/vector-icons";
 import colors from "tailwindcss/colors";
 import Logo from "../assets/logo.svg";
@@ -9,9 +14,12 @@ export const DAY_MARGIN_BETWEEN = 8;
 export const DAY_SIZE =
   Dimensions.get("screen").width / WEEK_DAYS - (SCREEN_HORIZONTAL_PADDING + 5);
 
-export function HabitDay() {
+interface Props extends TouchableOpacityProps {}
+
+export function HabitDay({ ...rest }: Props) {
   return (
     <TouchableOpacity
+      {...rest}
       className="bg-zinc-900 rounded-lg border-2 border-zinc-800 m-1"
       style={{ width: DAY_SIZE, height: DAY_SIZE }}
       activeOpacity={0.7}
