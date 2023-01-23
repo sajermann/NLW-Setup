@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { View, ScrollView, Text, TextInput } from "react-native";
+import { View, ScrollView, Text, TextInput, Alert } from "react-native";
 import { TouchableOpacity } from "react-native";
 import { Feather } from "@expo/vector-icons";
 
 import { BackButton } from "../components/BackButton";
 import { Checkbox } from "../components/Checkbox";
 import colors from "tailwindcss/colors";
+import { api } from "../lib/axios";
 
 const availablesWeekDays = [
   "Domingo",
@@ -19,6 +20,7 @@ const availablesWeekDays = [
 
 export function New() {
   const [weekDays, setWeekDays] = useState<number[]>([]);
+  const [title, setTitle] = useState("");
 
   function handleToggleWeekDay(weekDayIndex: number) {
     if (weekDays.includes(weekDayIndex)) {
@@ -27,6 +29,28 @@ export function New() {
       );
     } else {
       setWeekDays((prevState) => [...prevState, weekDayIndex]);
+    }
+  }
+
+  async function handleCreateNewHabit() {
+    try {
+      if (!title.trim() || weekDays.length === 0) {
+        Alert.alert(
+          "Novo Hábito",
+          "Informe o nome do hábito e escolha a periocidade"
+        );
+      }
+
+      await api.post("/haits", { title, weekDays });
+      setTitle("");
+      setWeekDays([]);
+      Alert.alert(
+        "Novo Hábito",
+        "Hábito criado com sucesso!"
+      );
+    } catch (e) {
+      console.log(e);
+      Alert.alert("Ops", "Não foi possível criar um novo hábito");
     }
   }
 
@@ -47,8 +71,10 @@ export function New() {
 
         <TextInput
           placeholder="Exercícios, dormir bem, etc..."
-          className="h-12 pl-4 rounded-lg bg-zinc-800 text-white focus:border-2 focus:border-green-600"
+          className="h-12 pl-4 rounded-lg bg-zinc-900 text-white border-2 border-zinc-800 focus:border-green-600"
           placeholderTextColor={colors.zinc[400]}
+          onChangeText={setTitle}
+          value={title}
         />
 
         <Text className="font-semibold mt-4 mb-3 text-white text-base">
@@ -66,6 +92,7 @@ export function New() {
         <TouchableOpacity
           activeOpacity={0.7}
           className="w-full h-14 flex-row items-center justify-center bg-green-600 rounded-md mt-6"
+          onPress={handleCreateNewHabit}
         >
           <Feather name="check" size={20} color={colors.white} />
           <Text className="font-semibold text-base text-white ml-2">
