@@ -35,13 +35,13 @@ export function New() {
   async function handleCreateNewHabit() {
     try {
       if (!title.trim() || weekDays.length === 0) {
-        Alert.alert(
+       return Alert.alert(
           "Novo Hábito",
           "Informe o nome do hábito e escolha a periocidade"
         );
       }
 
-      await api.post("/haits", { title, weekDays });
+      await api.post("/habits", { title, weekDays });
       setTitle("");
       setWeekDays([]);
       Alert.alert(

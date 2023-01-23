@@ -1,4 +1,4 @@
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { View, Text, ScrollView, Alert } from "react-native";
 
 import { HabitDay, DAY_SIZE } from "../components/HabitDay";
@@ -6,7 +6,7 @@ import { Header } from "../components/Header";
 import { generateDates } from "../utils/generateDates";
 
 import { api } from "../lib/axios";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { Loading } from "../components/Loading";
 import dayjs from "dayjs";
@@ -17,11 +17,11 @@ const minimumSummaryDatesSize = 18 * 6;
 const amountOfDaysToFill = minimumSummaryDatesSize - datesFromYearStart.length;
 
 type SummaryProps = {
-  id:string;
-  date:string;
-  amount:number;
-  completed:number;
-}
+  id: string;
+  date: string;
+  amount: number;
+  completed: number;
+};
 
 export function Home() {
   const [loading, setLoading] = useState(true);
@@ -42,9 +42,11 @@ export function Home() {
     }
   }
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, [])
+  );
 
   if (loading) {
     return <Loading />;
